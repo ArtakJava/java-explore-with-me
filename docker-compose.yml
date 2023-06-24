@@ -1,7 +1,9 @@
 version: '3.1'
 services:
   stats-server:
-    build: stats-server
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: stats-server
     container_name: stats-server
     ports:
