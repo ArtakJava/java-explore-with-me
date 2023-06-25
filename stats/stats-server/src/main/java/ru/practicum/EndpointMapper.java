@@ -16,7 +16,7 @@ public class EndpointMapper implements Serializable {
     public static EndpointHitDto mapToEndpointHitDto(EndpointHit endpointHit) {
         return EndpointHitDto.builder()
                 .app(endpointHit.getApp())
-                .uri(endpointHit.getUrl() + endpointHit.getEventId())
+                .uri(endpointHit.getUri())
                 .ip(endpointHit.getIp())
                 .timestamp(endpointHit.getTimestamp().toString())
                 .build();
@@ -25,18 +25,9 @@ public class EndpointMapper implements Serializable {
     public static EndpointHit mapToEndpointHit(EndpointHitDto endpointHitDto) {
         return EndpointHit.builder()
                 .app(endpointHitDto.getApp())
-                .url(getUrl(endpointHitDto.getUri()))
-                .eventId(getEventId(endpointHitDto.getUri()))
+                .uri(endpointHitDto.getUri())
                 .ip(endpointHitDto.getIp())
                 .timestamp(LocalDateTime.parse(endpointHitDto.getTimestamp(), formatter))
                 .build();
-    }
-
-    private static String getUrl(String uri) {
-        return uri.substring(0, uri.lastIndexOf("/"));
-    }
-
-    private static String getEventId(String uri) {
-        return uri.substring(uri.lastIndexOf("/") + 1);
     }
 }

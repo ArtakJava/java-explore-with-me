@@ -16,10 +16,8 @@ public class EndpointHit {
     private long id;
     @Column(name = "app")
     private String app;
-    @Column(name = "url")
-    private String url;
-    @Column(name = "event_id")
-    private String eventId;
+    @Column(name = "uri")
+    private String uri;
     @Column(name = "ip")
     private String ip;
     @Column(name = "timestamp")
