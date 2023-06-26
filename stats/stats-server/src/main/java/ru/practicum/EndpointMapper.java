@@ -2,6 +2,7 @@ package ru.practicum;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.constantManager.ConstantManager;
+import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.model.EndpointHit;
 
 import java.io.Serializable;
