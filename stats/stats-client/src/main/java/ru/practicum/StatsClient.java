@@ -13,6 +13,7 @@ import ru.practicum.dto.EndpointHitDto;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +33,10 @@ public class StatsClient {
         return post("/hit", endpointHitDto);
     }
 
-    public ResponseEntity<Object> stats(String start, String end, String[] uris, boolean unique) {
+    public ResponseEntity<Object> stats(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
         Map<String, Object> parameters = new HashMap<>(Map.of(
-                "start", URLEncoder.encode(start, StandardCharsets.UTF_8),
-                "end", URLEncoder.encode(end, StandardCharsets.UTF_8),
+                "start", URLEncoder.encode(String.valueOf(start), StandardCharsets.UTF_8),
+                "end", URLEncoder.encode(String.valueOf(end), StandardCharsets.UTF_8),
                 "unique", unique
         ));
         if (uris != null) {

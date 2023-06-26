@@ -1,6 +1,6 @@
 package ru.practicum.messageManager;
 
-public class MessageHolder {
+public class MessageManager {
     public static final String POST_REQUEST_HIT = "Получен запрос на сохранение информации - {}.";
     public static final String POST_REQUEST_HIT_SUCCESS = "Запрос на сохранение информации - {} успешно выполнен";
     public static final String GET_REQUEST_STATS = "Получен запрос на получение статистики от {} до {}.";

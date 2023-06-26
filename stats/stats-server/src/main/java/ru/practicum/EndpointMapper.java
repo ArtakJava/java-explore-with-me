@@ -1,17 +1,15 @@
 package ru.practicum;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
+import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.model.EndpointHit;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class EndpointMapper implements Serializable {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static EndpointHitDto mapToEndpointHitDto(EndpointHit endpointHit) {
         return EndpointHitDto.builder()
@@ -27,7 +25,7 @@ public class EndpointMapper implements Serializable {
                 .app(endpointHitDto.getApp())
                 .uri(endpointHitDto.getUri())
                 .ip(endpointHitDto.getIp())
-                .timestamp(LocalDateTime.parse(endpointHitDto.getTimestamp(), formatter))
+                .timestamp(LocalDateTime.parse(endpointHitDto.getTimestamp(), ConstantManager.formatter))
                 .build();
     }
 }
