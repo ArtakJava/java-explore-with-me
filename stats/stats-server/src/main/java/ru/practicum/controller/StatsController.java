@@ -6,8 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.constantManager.ConstantManager;
-import ru.practicum.dto.EndpointHitDto;
-import ru.practicum.dto.ViewStatsDto;
+import ru.practicum.EndpointHitDto;
+import ru.practicum.ViewStatsDto;
 import ru.practicum.messageManager.MessageManager;
 import ru.practicum.service.StatsService;
 

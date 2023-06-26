@@ -26,6 +26,9 @@ services:
       - POSTGRES_PASSWORD=stats
       - POSTGRES_DB=stats
   ewm-service:
+    build: main-service
+    image: main-service
+    container_name: main-service
     ports:
       - "8080:8080"
 
