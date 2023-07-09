@@ -7,6 +7,9 @@ import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
+import ru.practicum.enums.EventPublicSort;
+import ru.practicum.enums.EventState;
+import ru.practicum.enums.PageParameterCode;
 import ru.practicum.exception.EventNotPublishedException;
 import ru.practicum.exception.RangeParametersException;
 import ru.practicum.exception.UnSupportedSortException;
@@ -20,6 +23,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +42,7 @@ public class EventPublicServiceImpl extends AbstractServiceImpl implements Event
     }
 
     @Override
-    public List<EventShortDto> getEvents(EventPublicPageParameter eventPublicPageParameter) {
+    public List<EventShortDto> getEvents(EventPublicPageParameter eventPublicPageParameter, HttpServletRequest request) {
         List<Event> events = new ArrayList<>();
         List<EventShortDto> result;
         validateDates(eventPublicPageParameter);
@@ -85,6 +89,7 @@ public class EventPublicServiceImpl extends AbstractServiceImpl implements Event
                         );
                 break;
         }
+        Arrays.stream(getUris(events)).forEach(uri -> addHit(uri, request));
         String sort = eventPublicPageParameter.getSort();
         if (EventPublicSort.EVENT_DATE.equals(EventPublicSort.valueOf(sort))) {
             result = EventMapper.mapToEventsShortDto(
@@ -116,7 +121,7 @@ public class EventPublicServiceImpl extends AbstractServiceImpl implements Event
         if (!event.getState().equals(EventState.PUBLISHED)) {
             throw new EventNotPublishedException(String.format(ErrorMessageManager.EVENT_NOT_PUBLISHED, eventId));
         }
-        addHit(request);
+        addHit(request.getRequestURI(), request);
         EventFullDto result = EventMapper.mapToEventFullDto(
                 event,
                 getConfirmedRequestsCount(eventId),
@@ -134,11 +139,11 @@ public class EventPublicServiceImpl extends AbstractServiceImpl implements Event
         }
     }
 
-    private void addHit(HttpServletRequest request) {
+    private void addHit(String uri, HttpServletRequest request) {
         ConstantManager.STATS_CLIENT.hit(
                 EndpointHitDto.builder()
                         .app(ConstantManager.APP_NAME)
-                        .uri(request.getRequestURI())
+                        .uri(uri)
                         .ip(request.getRemoteAddr())
                         .timestamp(LocalDateTime.now().format(ConstantManager.DATE_TIME_FORMATTER))
                         .build()

@@ -1,7 +1,7 @@
 package ru.practicum.dto.event;
 
 import lombok.*;
-import ru.practicum.AdminStateAction;
+import ru.practicum.enums.AdminStateAction;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

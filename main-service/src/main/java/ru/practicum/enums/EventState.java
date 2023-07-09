@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.enums;
 
 public enum EventState {
     PENDING("Событие в ожидании модерации"),

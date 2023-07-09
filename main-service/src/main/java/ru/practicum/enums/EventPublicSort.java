@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.enums;
 
 public enum EventPublicSort {
     EVENT_DATE("Сортировка по дате события"),

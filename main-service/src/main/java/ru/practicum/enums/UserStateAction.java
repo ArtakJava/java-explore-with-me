@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.enums;
 
 public enum UserStateAction {
     SEND_TO_REVIEW("Отправлено на проверку"),

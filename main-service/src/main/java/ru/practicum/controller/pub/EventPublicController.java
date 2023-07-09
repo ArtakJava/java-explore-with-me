@@ -32,7 +32,8 @@ public class EventPublicController {
             @RequestParam(defaultValue = "false") boolean onlyAvailable,
             @RequestParam(defaultValue = "EVENT_DATE") String sort,
             @RequestParam(defaultValue = "0") int from,
-            @RequestParam(defaultValue = ConstantManager.DEFAULT_SIZE_OF_PAGE_EVENTS) int size) {
+            @RequestParam(defaultValue = ConstantManager.DEFAULT_SIZE_OF_PAGE_EVENTS) int size,
+            HttpServletRequest request) {
         log.info(InfoMessageManager.GET_ALL_EVENTS_REQUEST);
         return service.getEvents(
                 new EventPublicPageParameter(
@@ -44,7 +45,8 @@ public class EventPublicController {
                         onlyAvailable,
                         new PageRequestCustom(from, size, ConstantManager.SORT_EVENTS_BY_EVENT_DATE),
                         sort
-                )
+                ),
+                request
         );
     }
 

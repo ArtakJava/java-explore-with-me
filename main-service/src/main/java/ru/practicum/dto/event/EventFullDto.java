@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.EventState;
+import ru.practicum.enums.EventState;
 import ru.practicum.Location;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.user.UserShortDto;

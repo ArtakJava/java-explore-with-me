@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface EventPublicService extends AbstractService {
 
-    List<EventShortDto> getEvents(EventPublicPageParameter eventPublicPageParameter);
+    List<EventShortDto> getEvents(EventPublicPageParameter eventPublicPageParameter, HttpServletRequest request);
 
     EventFullDto getById(long eventId, HttpServletRequest request);
 }

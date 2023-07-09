@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.dto.event.UpdateEventRequest;
+import ru.practicum.enums.RequestState;
 import ru.practicum.exception.EventDateException;
 import ru.practicum.exception.EventParticipantLimitException;
 import ru.practicum.messageManager.ErrorMessageManager;
@@ -141,18 +142,18 @@ public class AbstractServiceImpl implements AbstractService {
         return event;
     }
 
+    protected String[] getUris(List<Event> events) {
+        return events.stream()
+                .map(event -> ConstantManager.URI_PREFIX + event.getId())
+                .toArray(String[]::new);
+    }
+
     private LocalDateTime getStartViewsStats(List<Event> events) {
         return events.stream()
                 .map(Event::getPublishedOn)
                 .filter(Objects::nonNull)
                 .min(LocalDateTime::compareTo)
                 .orElse(null);
-    }
-
-    private String[] getUris(List<Event> events) {
-        return events.stream()
-                .map(event -> ConstantManager.URI_PREFIX + event.getId())
-                .toArray(String[]::new);
     }
 
     private long getEventIdFromUri(String uri) {

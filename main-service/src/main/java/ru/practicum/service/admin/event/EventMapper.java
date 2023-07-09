@@ -1,7 +1,7 @@
 package ru.practicum.service.admin.event;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.EventState;
+import ru.practicum.enums.EventState;
 import ru.practicum.Location;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;

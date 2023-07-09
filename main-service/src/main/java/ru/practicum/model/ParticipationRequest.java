@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.RequestState;
+import ru.practicum.enums.RequestState;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.enums;
 
 public enum EventRequestStateUpdate {
     CONFIRMED("Запрос подтвержден"),
