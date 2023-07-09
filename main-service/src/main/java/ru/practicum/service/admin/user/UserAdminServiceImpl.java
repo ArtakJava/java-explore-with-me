@@ -10,7 +10,6 @@ import ru.practicum.model.User;
 import ru.practicum.repository.UserRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,10 +33,14 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
-    public List<UserDto> getUsers(int[] ids, PageRequestCustom pageRequest) {
-        List<User> users = userRepository.findAllByIdIn(ids, pageRequest);
-        return users.stream()
-                .map(UserMapper::mapToUserDto)
-                .collect(Collectors.toList());
+    public List<UserDto> getUsers(long[] ids, PageRequestCustom pageRequest) {
+        List<User> users;
+        if (ids != null) {
+            users = userRepository.findAllByIdIn(ids, pageRequest);
+        } else {
+            users = userRepository.findAll(pageRequest).toList();
+        }
+        log.info(InfoMessageManager.SUCCESS_ALL_USERS_REQUEST);
+        return UserMapper.mapToUsersDto(users);
     }
 }

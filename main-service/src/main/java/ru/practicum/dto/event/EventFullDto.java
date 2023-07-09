@@ -1,8 +1,10 @@
 package ru.practicum.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.EventState;
 import ru.practicum.Location;
 import ru.practicum.constantManager.ConstantManager;
@@ -15,26 +17,28 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EventFullDto {
     @NotBlank
     private String annotation;
-    @NotBlank
+    @NotNull
     private CategoryDto category;
     private long confirmedRequests;
-    private final String createdOn = LocalDateTime.now().format(ConstantManager.formatter);
+    private final String createdOn = LocalDateTime.now().format(ConstantManager.DATE_TIME_FORMATTER);
     private String description;
-    @NotBlank
-    @JsonFormat(pattern = ConstantManager.datePattern)
+    @NotNull
+    @JsonFormat(pattern = ConstantManager.DATE_PATTERN)
     private LocalDateTime eventDate;
     private long id;
-    @NotBlank
+    @NotNull
     private UserShortDto initiator;
-    @NotBlank
+    @NotNull
     private Location location;
     @NotNull
     private Boolean paid;
     private Integer participantLimit = 0;
-    @JsonFormat(pattern = ConstantManager.datePattern)
+    @JsonFormat(pattern = ConstantManager.DATE_PATTERN)
     private LocalDateTime publishedOn;
     private Boolean requestModeration = true;
     private EventState state = EventState.PENDING;

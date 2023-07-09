@@ -11,9 +11,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.dto.EndpointHitDto;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +19,8 @@ import java.util.Map;
 public class StatsClient {
     protected final RestTemplate rest;
 
-    public StatsClient(@Value("${stats-server.url}") String serverUrl, RestTemplateBuilder builder) {
-        this.rest = builder
+    public StatsClient(@Value("${stats-server.url}") String serverUrl) {
+        this.rest = new RestTemplateBuilder()
                 .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build();
@@ -33,10 +30,12 @@ public class StatsClient {
         return post("/hit", endpointHitDto);
     }
 
-    public ResponseEntity<Object> stats(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
+    public ResponseEntity<Object[]> stats(String start, String end, String[] uris, boolean unique) {
         Map<String, Object> parameters = new HashMap<>(Map.of(
-                "start", URLEncoder.encode(String.valueOf(start), StandardCharsets.UTF_8),
-                "end", URLEncoder.encode(String.valueOf(end), StandardCharsets.UTF_8),
+//                "start", URLEncoder.encode(String.valueOf(start), StandardCharsets.UTF_8),
+//                "end", URLEncoder.encode(String.valueOf(end), StandardCharsets.UTF_8),
+                "start", start,
+                "end", end,
                 "unique", unique
         ));
         if (uris != null) {
@@ -51,8 +50,8 @@ public class StatsClient {
         return makeAndSendRequest(HttpMethod.POST, path, null, endpointHitDto);
     }
 
-    protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
-        return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
+    protected ResponseEntity<Object[]> get(String path, @Nullable Map<String, Object> parameters) {
+        return makeAndSendRequestForStats(HttpMethod.GET, path, parameters, null);
     }
 
     private ResponseEntity<Object> makeAndSendRequest(HttpMethod method,
@@ -74,6 +73,25 @@ public class StatsClient {
         return prepareGatewayResponse(serverResponse);
     }
 
+    private ResponseEntity<Object[]> makeAndSendRequestForStats(HttpMethod method,
+                                                                String path,
+                                                                @Nullable Map<String, Object> parameters,
+                                                                @Nullable EndpointHitDto body) {
+        HttpEntity<EndpointHitDto> requestEntity = new HttpEntity<>(body, defaultHeaders());
+
+        ResponseEntity<Object[]> serverResponse;
+        try {
+            if (parameters != null) {
+                serverResponse = rest.exchange(path, method, requestEntity, Object[].class, parameters);
+            } else {
+                serverResponse = rest.exchange(path, method, requestEntity, Object[].class);
+            }
+        } catch (HttpStatusCodeException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(new byte[][]{e.getResponseBodyAsByteArray()});
+        }
+        return prepareGatewayResponseForStats(serverResponse);
+    }
+
     private HttpHeaders defaultHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -82,6 +100,20 @@ public class StatsClient {
     }
 
     private static ResponseEntity<Object> prepareGatewayResponse(ResponseEntity<Object> response) {
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return response;
+        }
+
+        ResponseEntity.BodyBuilder responseBuilder = ResponseEntity.status(response.getStatusCode());
+
+        if (response.hasBody()) {
+            return responseBuilder.body(response.getBody());
+        }
+
+        return responseBuilder.build();
+    }
+
+    private static ResponseEntity<Object[]> prepareGatewayResponseForStats(ResponseEntity<Object[]> response) {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response;
         }

@@ -38,8 +38,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
         return resultDto;
     }
 
-    @Override
-    public Category getUpdatedCategory(Category category, Category categoryPatch) {
+    private Category getUpdatedCategory(Category category, Category categoryPatch) {
         if (categoryPatch.getName() != null) {
             category.setName(categoryPatch.getName());
         }

@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 @Builder
 public class UserDto {
     private long id;
+    @NotBlank
     @Email(message = ErrorMessageManager.USER_EMAIL)
     @Size(min = 6, max = 254, message = ErrorMessageManager.USER_EMAIL_MIN_6_MAX_254)
     private String email;

@@ -1,11 +1,12 @@
-package ru.practicum.service.priv;
+package ru.practicum.service.priv.event;
 
+import ru.practicum.AbstractService;
 import ru.practicum.PageRequestCustom;
 import ru.practicum.dto.event.*;
 
 import java.util.List;
 
-public interface EventPrivateService {
+public interface EventPrivateService extends AbstractService {
 
     EventFullDto create(long userId, NewEventDto newEventDto);
 

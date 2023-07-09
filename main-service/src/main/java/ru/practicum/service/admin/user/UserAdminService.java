@@ -11,5 +11,5 @@ public interface UserAdminService {
 
     void delete(long userId);
 
-    List<UserDto> getUsers(int[] ids, PageRequestCustom pageRequest);
+    List<UserDto> getUsers(long[] ids, PageRequestCustom pageRequest);
 }

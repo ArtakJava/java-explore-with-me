@@ -1,84 +1,125 @@
 package ru.practicum.service.admin.event;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.AdminStateAction;
-import ru.practicum.EventPageParameter;
-import ru.practicum.EventState;
+import ru.practicum.*;
+import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.UpdateEventAdminRequest;
+import ru.practicum.exception.EventAlreadyPublishedException;
+import ru.practicum.messageManager.ErrorMessageManager;
 import ru.practicum.messageManager.InfoMessageManager;
-import ru.practicum.model.Category;
 import ru.practicum.model.Event;
-import ru.practicum.repository.CategoryRepository;
-import ru.practicum.repository.EventRepository;
+import ru.practicum.repository.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
-public class EventAdminServiceImpl implements EventAdminService {
-    private final EventRepository eventRepository;
-    private final CategoryRepository categoryRepository;
+public class EventAdminServiceImpl extends AbstractServiceImpl implements EventAdminService {
+
+    public EventAdminServiceImpl(
+            RequestRepository requestRepository,
+            EventRepository eventRepository,
+            UserRepository userRepository,
+            CategoryRepository categoryRepository,
+            CompilationRepository compilationRepository) {
+        super(requestRepository, eventRepository, userRepository, categoryRepository, compilationRepository);
+    }
 
     @Override
     public EventFullDto update(long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
+        validateEventDate(updateEventAdminRequest.getEventDate());
         Event oldEvent = eventRepository.getReferenceById(eventId);
-        Event eventPatch = EventMapper.mapToEventEntity(updateEventAdminRequest);
-        if (updateEventAdminRequest.getCategory() != null) {
-            Category category = categoryRepository.getReferenceById(updateEventAdminRequest.getCategory());
-            eventPatch.setCategory(category);
-        }
-        if (updateEventAdminRequest.getStateAction().equals(AdminStateAction.PUBLISH_EVENT)) {
-            eventPatch.setState(EventState.PUBLISHED);
-        } else if (updateEventAdminRequest.getStateAction().equals(AdminStateAction.REJECT_EVENT)) {
-            eventPatch.setState(EventState.CANCELED);
-        }
-        Event result = eventRepository.save(getUpdatedEvent(oldEvent, eventPatch));
-        EventFullDto resultDto = EventMapper.mapToEventFullDto(result);
+        Event event = eventRepository.save(getEvent(oldEvent, updateEventAdminRequest));
+        EventFullDto resultDto = EventMapper.mapToEventFullDto(
+                event,
+                getConfirmedRequestsCount(event.getId()),
+                getViews(event, ConstantManager.DEFAULT_UNIQUE_FOR_STATS)
+        );
         log.info(InfoMessageManager.SUCCESS_PATCH, eventId, updateEventAdminRequest);
         return resultDto;
     }
 
     @Override
-    public List<EventFullDto> getEvents(EventPageParameter eventPageParameter) {
-        List<Event> result = eventRepository.findAll();
-        return result.stream()
-                .map(EventMapper::mapToEventFullDto)
-                .collect(Collectors.toList());
+    public List<EventFullDto> getEvents(EventAdminPageParameter eventAdminPageParameter) {
+        List<Event> events = new ArrayList<>();
+        PageParameterCode code = eventAdminPageParameter.getPageParameterCode();
+        switch (code) {
+            case WITH_ALL_PARAMETERS:
+                events = eventRepository.findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateAfterAndEventDateBefore(
+                        eventAdminPageParameter.getUsers(),
+                        Arrays.stream(eventAdminPageParameter.getStates()).map(EventState::valueOf).collect(Collectors.toList()),
+                        eventAdminPageParameter.getCategories(),
+                        eventAdminPageParameter.getRangeStart(),
+                        eventAdminPageParameter.getRangeEnd(),
+                        eventAdminPageParameter.getPageRequest()
+                );
+                break;
+            case WITHOUT_PARAMETERS:
+                events = eventRepository.findAllByEventDateAfter(
+                        LocalDateTime.now(),
+                        eventAdminPageParameter.getPageRequest()
+                );
+                break;
+            case WITHOUT_DATES:
+                events = eventRepository.findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateAfter(
+                        eventAdminPageParameter.getUsers(),
+                        Arrays.stream(eventAdminPageParameter.getStates()).map(EventState::valueOf).collect(Collectors.toList()),
+                        eventAdminPageParameter.getCategories(),
+                        LocalDateTime.now(),
+                        eventAdminPageParameter.getPageRequest()
+                );
+                break;
+            case ONLY_CATEGORY:
+                events = eventRepository.findAllByCategoryIdInAndEventDateAfter(
+                        eventAdminPageParameter.getCategories(),
+                        LocalDateTime.now(),
+                        eventAdminPageParameter.getPageRequest()
+                );
+                break;
+            case USERS_AND_CATEGORIES:
+                events = eventRepository.findAllByInitiatorIdInAndCategoryIdInAndEventDateAfter(
+                        eventAdminPageParameter.getUsers(),
+                        eventAdminPageParameter.getCategories(),
+                        LocalDateTime.now(),
+                        eventAdminPageParameter.getPageRequest()
+                );
+                break;
+        }
+        List<EventFullDto> result = EventMapper.mapToEventsFullDto(
+                events,
+                getConfirmedRequestsByEvent(events),
+                getViewsByEventId(events, ConstantManager.DEFAULT_UNIQUE_FOR_STATS)
+        );
+        log.info(InfoMessageManager.SUCCESS_GET_ALL_EVENTS);
+        return result;
     }
 
-    public Event getUpdatedEvent(Event event, Event eventPatch) {
-        if (eventPatch.getAnnotation() != null) {
-            event.setAnnotation(eventPatch.getAnnotation());
-        }if (eventPatch.getCategory() != null) {
-            event.setCategory(eventPatch.getCategory());
+    private Event getEvent(Event event, UpdateEventAdminRequest updateEventAdminRequest) {
+        if (AdminStateAction.PUBLISH_EVENT.equals(updateEventAdminRequest.getStateAction())) {
+            if (event.getState().equals(EventState.PENDING)) {
+                event.setState(EventState.PUBLISHED);
+                event.setPublishedOn(LocalDateTime.now());
+            } else {
+                throw new EventAlreadyPublishedException(
+                        String.format(ErrorMessageManager.EVENT_ALREADY_PUBLISHED, event.getId())
+                );
+            }
+        } else if (AdminStateAction.REJECT_EVENT.equals(updateEventAdminRequest.getStateAction())) {
+            if (!event.getState().equals(EventState.PUBLISHED)) {
+                event.setState(EventState.CANCELED);
+            } else {
+                throw new EventAlreadyPublishedException(
+                        String.format(ErrorMessageManager.EVENT_ALREADY_PUBLISHED, event.getId())
+                );
+            }
+            event.setState(EventState.CANCELED);
         }
-        if (eventPatch.getDescription() != null) {
-            event.setDescription(eventPatch.getDescription());
-        }
-        if (eventPatch.getEventDate() != null) {
-            event.setEventDate(eventPatch.getEventDate());
-        }
-        if (eventPatch.getLat() != null && eventPatch.getLon() != null) {
-            event.setLat(eventPatch.getLat());
-            event.setLon(eventPatch.getLon());
-        }
-        if (eventPatch.getPaid() != null) {
-            event.setPaid(eventPatch.getPaid());
-        }
-        if (eventPatch.getParticipantLimit() != null) {
-            event.setParticipantLimit(eventPatch.getParticipantLimit());
-        }
-        if (eventPatch.getRequestModeration() != null) {
-            event.setRequestModeration(eventPatch.getRequestModeration());
-        }
-        if (eventPatch.getTitle() != null) {
-            event.setTitle(eventPatch.getTitle());
-        }
-        return event;
+        return getUpdatedEvent(event, updateEventAdminRequest);
     }
 }

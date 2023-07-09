@@ -1,24 +1,30 @@
 package ru.practicum.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.EventState;
-import ru.practicum.Location;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "events", schema = "public")
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Event {
     private String annotation;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
     @Column(name = "created_on")
-    private LocalDateTime createdOn = LocalDateTime.now();
+    private LocalDateTime createdOn;
     private String description;
     @Column(name = "event_date")
     private LocalDateTime eventDate;
@@ -39,7 +45,11 @@ public class Event {
     private Boolean requestModeration = true;
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
-    private EventState state = EventState.PENDING;
+    private EventState state;
     private String title;
-    private long views = 0;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name="compilations_events",
+            joinColumns=  @JoinColumn(name="event_id", referencedColumnName="id"),
+            inverseJoinColumns= @JoinColumn(name="compilation_id", referencedColumnName="id") )
+    private List<Compilation> compilations;
 }
