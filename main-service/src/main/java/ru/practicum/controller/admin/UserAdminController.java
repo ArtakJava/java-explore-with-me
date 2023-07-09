@@ -39,6 +39,6 @@ public class UserAdminController {
                                   @RequestParam(defaultValue = "0") int from,
                                   @RequestParam(defaultValue = ConstantManager.DEFAULT_SIZE_OF_PAGE_USERS) int size) {
         log.info(InfoMessageManager.GET_ALL_USERS_REQUEST);
-        return service.getUsers(ids, new PageRequestCustom(from, size, ConstantManager.SORT_USERS_BY_ID_ASC) );
+        return service.getUsers(ids, new PageRequestCustom(from, size, ConstantManager.SORT_USERS_BY_ID_ASC));
     }
 }

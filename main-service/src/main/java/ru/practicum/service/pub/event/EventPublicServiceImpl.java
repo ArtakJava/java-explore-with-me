@@ -53,8 +53,8 @@ public class EventPublicServiceImpl extends AbstractServiceImpl implements Event
                 );
                 break;
             case WITHOUT_DATES:
-                events = eventRepository.
-                        findByAnnotationContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndCategoryIdInAndPaidAndEventDateAfterAndState(
+                events = eventRepository
+                        .findByAnnotationContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndCategoryIdInAndPaidAndEventDateAfterAndState(
                                 eventPublicPageParameter.getText(),
                                 eventPublicPageParameter.getText(),
                                 eventPublicPageParameter.getCategories(),
@@ -72,8 +72,8 @@ public class EventPublicServiceImpl extends AbstractServiceImpl implements Event
                 );
                 break;
             case WITH_ALL_PARAMETERS:
-                events = eventRepository.
-                        findByAnnotationContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndCategoryIdInAndPaidAndEventDateAfterAndEventDateBeforeAndState(
+                events = eventRepository
+                        .findByAnnotationContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndCategoryIdInAndPaidAndEventDateAfterAndEventDateBeforeAndState(
                                 eventPublicPageParameter.getText(),
                                 eventPublicPageParameter.getText(),
                                 eventPublicPageParameter.getCategories(),

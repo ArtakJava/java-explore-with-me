@@ -48,8 +48,8 @@ public class Event {
     private EventState state;
     private String title;
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name="compilations_events",
-            joinColumns=  @JoinColumn(name="event_id", referencedColumnName="id"),
-            inverseJoinColumns= @JoinColumn(name="compilation_id", referencedColumnName="id") )
+    @JoinTable(name = "compilations_events",
+            joinColumns = @JoinColumn(name = "event_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "compilation_id", referencedColumnName = "id"))
     private List<Compilation> compilations;
 }
