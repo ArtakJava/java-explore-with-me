@@ -3,7 +3,7 @@ package ru.practicum.service.admin.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.PageRequestCustom;
+import ru.practicum.dto.event.pageParameter.PageRequestCustom;
 import ru.practicum.dto.user.UserDto;
 import ru.practicum.messageManager.InfoMessageManager;
 import ru.practicum.model.User;

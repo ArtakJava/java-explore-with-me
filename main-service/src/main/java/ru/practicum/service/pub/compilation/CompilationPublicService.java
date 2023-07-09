@@ -1,7 +1,7 @@
 package ru.practicum.service.pub.compilation;
 
 import ru.practicum.service.AbstractService;
-import ru.practicum.PageRequestCustom;
+import ru.practicum.dto.event.pageParameter.PageRequestCustom;
 import ru.practicum.dto.compilation.CompilationDto;
 
 import java.util.List;

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.PageRequestCustom;
 import ru.practicum.dto.enums.PageParameterCode;
 
 import java.time.LocalDateTime;

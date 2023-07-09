@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.*;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.pageParameter.EventPublicPageParameter;
+import ru.practicum.dto.event.pageParameter.PageRequestCustom;
 import ru.practicum.messageManager.InfoMessageManager;
 import ru.practicum.service.pub.event.EventPublicService;
 

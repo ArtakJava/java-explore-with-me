@@ -1,6 +1,6 @@
 package ru.practicum.service.admin.user;
 
-import ru.practicum.PageRequestCustom;
+import ru.practicum.dto.event.pageParameter.PageRequestCustom;
 import ru.practicum.dto.user.UserDto;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package ru.practicum.service.pub.category;
 
-import ru.practicum.PageRequestCustom;
+import ru.practicum.dto.event.pageParameter.PageRequestCustom;
 import ru.practicum.dto.category.CategoryDto;
 
 import java.util.List;

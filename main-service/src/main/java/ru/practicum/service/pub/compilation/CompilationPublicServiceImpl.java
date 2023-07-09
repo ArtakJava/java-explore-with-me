@@ -3,7 +3,7 @@ package ru.practicum.service.pub.compilation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.service.AbstractServiceImpl;
-import ru.practicum.PageRequestCustom;
+import ru.practicum.dto.event.pageParameter.PageRequestCustom;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.compilation.CompilationDto;
 import ru.practicum.messageManager.InfoMessageManager;

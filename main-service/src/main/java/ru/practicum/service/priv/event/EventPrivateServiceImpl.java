@@ -2,13 +2,13 @@ package ru.practicum.service.priv.event;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.*;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.event.*;
 import ru.practicum.dto.enums.EventRequestStateUpdate;
 import ru.practicum.dto.enums.EventState;
 import ru.practicum.dto.enums.RequestState;
 import ru.practicum.dto.enums.UserStateAction;
+import ru.practicum.dto.event.pageParameter.PageRequestCustom;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.dto.request.ParticipationRequestDto;
