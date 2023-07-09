@@ -1,11 +1,11 @@
-package ru.practicum.dto.event;
+package ru.practicum.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.Location;
+import ru.practicum.dto.Location;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.messageManager.ErrorMessageManager;
 

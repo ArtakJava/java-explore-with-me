@@ -1,10 +1,10 @@
-package ru.practicum.dto.event;
+package ru.practicum.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.enums.EventRequestStateUpdate;
+import ru.practicum.dto.enums.EventRequestStateUpdate;
 
 import java.util.List;
 

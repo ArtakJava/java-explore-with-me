@@ -1,11 +1,11 @@
-package ru.practicum;
+package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.ViewStatsDto;
-import ru.practicum.dto.event.UpdateEventRequest;
-import ru.practicum.enums.RequestState;
+import ru.practicum.dto.request.UpdateEventRequest;
+import ru.practicum.dto.enums.RequestState;
 import ru.practicum.exception.EventDateException;
 import ru.practicum.exception.EventParticipantLimitException;
 import ru.practicum.messageManager.ErrorMessageManager;

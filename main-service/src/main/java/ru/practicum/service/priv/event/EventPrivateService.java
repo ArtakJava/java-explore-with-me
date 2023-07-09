@@ -1,8 +1,12 @@
 package ru.practicum.service.priv.event;
 
-import ru.practicum.AbstractService;
+import ru.practicum.service.AbstractService;
 import ru.practicum.PageRequestCustom;
 import ru.practicum.dto.event.*;
+import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
+import ru.practicum.dto.request.EventRequestStatusUpdateResult;
+import ru.practicum.dto.request.ParticipationRequestDto;
+import ru.practicum.dto.request.UpdateEventUserRequest;
 
 import java.util.List;
 

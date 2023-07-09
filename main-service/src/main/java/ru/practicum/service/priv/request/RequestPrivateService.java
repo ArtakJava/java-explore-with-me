@@ -1,7 +1,7 @@
 package ru.practicum.service.priv.request;
 
-import ru.practicum.AbstractService;
-import ru.practicum.dto.event.ParticipationRequestDto;
+import ru.practicum.service.AbstractService;
+import ru.practicum.dto.request.ParticipationRequestDto;
 
 import java.util.List;
 

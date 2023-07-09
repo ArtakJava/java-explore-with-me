@@ -2,10 +2,10 @@ package ru.practicum.service.priv.request;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.AbstractServiceImpl;
-import ru.practicum.enums.EventState;
-import ru.practicum.enums.RequestState;
-import ru.practicum.dto.event.ParticipationRequestDto;
+import ru.practicum.service.AbstractServiceImpl;
+import ru.practicum.dto.enums.EventState;
+import ru.practicum.dto.enums.RequestState;
+import ru.practicum.dto.request.ParticipationRequestDto;
 import ru.practicum.exception.EventNotPublishedForRequestException;
 import ru.practicum.exception.EventParticipantOwnerException;
 import ru.practicum.exception.UserAlreadySendRequestException;

@@ -1,6 +1,6 @@
 package ru.practicum.service.admin.compilation;
 
-import ru.practicum.AbstractService;
+import ru.practicum.service.AbstractService;
 import ru.practicum.dto.compilation.CompilationDto;
 import ru.practicum.dto.compilation.NewCompilationDto;
 import ru.practicum.dto.compilation.UpdateCompilationRequest;

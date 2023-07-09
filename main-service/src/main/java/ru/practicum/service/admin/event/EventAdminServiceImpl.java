@@ -2,18 +2,19 @@ package ru.practicum.service.admin.event;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.*;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.event.EventFullDto;
-import ru.practicum.dto.event.UpdateEventAdminRequest;
-import ru.practicum.enums.AdminStateAction;
-import ru.practicum.enums.EventState;
-import ru.practicum.enums.PageParameterCode;
+import ru.practicum.dto.event.pageParameter.EventAdminPageParameter;
+import ru.practicum.dto.request.UpdateEventAdminRequest;
+import ru.practicum.dto.enums.AdminStateAction;
+import ru.practicum.dto.enums.EventState;
+import ru.practicum.dto.enums.PageParameterCode;
 import ru.practicum.exception.EventAlreadyPublishedException;
 import ru.practicum.messageManager.ErrorMessageManager;
 import ru.practicum.messageManager.InfoMessageManager;
 import ru.practicum.model.Event;
 import ru.practicum.repository.*;
+import ru.practicum.service.AbstractServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.PageRequestCustom;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.event.*;
+import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
+import ru.practicum.dto.request.EventRequestStatusUpdateResult;
+import ru.practicum.dto.request.ParticipationRequestDto;
+import ru.practicum.dto.request.UpdateEventUserRequest;
 import ru.practicum.messageManager.InfoMessageManager;
 import ru.practicum.service.priv.event.EventPrivateService;
 

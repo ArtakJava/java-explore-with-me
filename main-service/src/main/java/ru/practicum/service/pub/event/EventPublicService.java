@@ -1,7 +1,7 @@
 package ru.practicum.service.pub.event;
 
-import ru.practicum.AbstractService;
-import ru.practicum.EventPublicPageParameter;
+import ru.practicum.service.AbstractService;
+import ru.practicum.dto.event.pageParameter.EventPublicPageParameter;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 

@@ -1,9 +1,9 @@
 package ru.practicum.service.priv.request;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.enums.EventRequestStateUpdate;
-import ru.practicum.enums.RequestState;
-import ru.practicum.dto.event.ParticipationRequestDto;
+import ru.practicum.dto.enums.EventRequestStateUpdate;
+import ru.practicum.dto.enums.RequestState;
+import ru.practicum.dto.request.ParticipationRequestDto;
 import ru.practicum.model.Event;
 import ru.practicum.model.ParticipationRequest;
 import ru.practicum.model.User;

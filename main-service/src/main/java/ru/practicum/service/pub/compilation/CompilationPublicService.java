@@ -1,6 +1,6 @@
 package ru.practicum.service.pub.compilation;
 
-import ru.practicum.AbstractService;
+import ru.practicum.service.AbstractService;
 import ru.practicum.PageRequestCustom;
 import ru.practicum.dto.compilation.CompilationDto;
 

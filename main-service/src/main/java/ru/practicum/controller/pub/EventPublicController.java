@@ -8,6 +8,7 @@ import ru.practicum.*;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
+import ru.practicum.dto.event.pageParameter.EventPublicPageParameter;
 import ru.practicum.messageManager.InfoMessageManager;
 import ru.practicum.service.pub.event.EventPublicService;
 

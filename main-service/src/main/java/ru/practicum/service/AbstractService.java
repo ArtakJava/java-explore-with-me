@@ -1,6 +1,6 @@
-package ru.practicum;
+package ru.practicum.service;
 
-import ru.practicum.dto.event.UpdateEventRequest;
+import ru.practicum.dto.request.UpdateEventRequest;
 import ru.practicum.model.Event;
 
 import java.time.LocalDateTime;

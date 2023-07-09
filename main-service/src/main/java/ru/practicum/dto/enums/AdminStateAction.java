@@ -1,4 +1,4 @@
-package ru.practicum.enums;
+package ru.practicum.dto.enums;
 
 public enum AdminStateAction {
     PUBLISH_EVENT("Событие опубликовано"),

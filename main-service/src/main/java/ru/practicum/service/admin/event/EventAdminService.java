@@ -1,9 +1,9 @@
 package ru.practicum.service.admin.event;
 
-import ru.practicum.AbstractService;
-import ru.practicum.EventAdminPageParameter;
+import ru.practicum.service.AbstractService;
+import ru.practicum.dto.event.pageParameter.EventAdminPageParameter;
 import ru.practicum.dto.event.EventFullDto;
-import ru.practicum.dto.event.UpdateEventAdminRequest;
+import ru.practicum.dto.request.UpdateEventAdminRequest;
 
 import java.util.List;
 

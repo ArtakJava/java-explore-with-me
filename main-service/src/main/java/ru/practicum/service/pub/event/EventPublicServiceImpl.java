@@ -2,14 +2,14 @@ package ru.practicum.service.pub.event;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.*;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
-import ru.practicum.enums.EventPublicSort;
-import ru.practicum.enums.EventState;
-import ru.practicum.enums.PageParameterCode;
+import ru.practicum.dto.enums.EventPublicSort;
+import ru.practicum.dto.enums.EventState;
+import ru.practicum.dto.enums.PageParameterCode;
+import ru.practicum.dto.event.pageParameter.EventPublicPageParameter;
 import ru.practicum.exception.EventNotPublishedException;
 import ru.practicum.exception.RangeParametersException;
 import ru.practicum.exception.UnSupportedSortException;
@@ -17,6 +17,7 @@ import ru.practicum.messageManager.ErrorMessageManager;
 import ru.practicum.messageManager.InfoMessageManager;
 import ru.practicum.model.Event;
 import ru.practicum.repository.*;
+import ru.practicum.service.AbstractServiceImpl;
 import ru.practicum.service.admin.event.EventMapper;
 
 import javax.persistence.EntityNotFoundException;
