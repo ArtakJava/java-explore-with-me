@@ -15,6 +15,8 @@ import ru.practicum.messageManager.InfoMessageManager;
 import ru.practicum.service.priv.event.EventPrivateService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -32,9 +34,10 @@ public class EventPrivateController {
     }
 
     @GetMapping("/{userId}/events")
-    public List<EventShortDto> getAllUserEvents(@PathVariable long userId,
-                                                @RequestParam(defaultValue = "0") int from,
-                                                @RequestParam(defaultValue = ConstantManager.DEFAULT_SIZE_OF_PAGE_EVENTS) int size) {
+    public List<EventShortDto> getAllUserEvents(
+            @PathVariable long userId,
+            @RequestParam(defaultValue = ConstantManager.DEFAULT_PAGE_PARAMETER_FROM) @PositiveOrZero int from,
+            @RequestParam(defaultValue = ConstantManager.DEFAULT_SIZE_OF_PAGE_EVENTS) @Positive int size) {
         log.info(InfoMessageManager.GET_USER_ALL_EVENTS_REQUEST, userId);
         return service.getAllUserEvents(userId, new PageRequestCustom(from, size, ConstantManager.SORT_EVENTS_BY_EVENT_DATE));
     }
@@ -60,9 +63,10 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests")
-    public EventRequestStatusUpdateResult approveRequestsByEvent(@PathVariable long userId,
-                                                                 @PathVariable long eventId,
-                                                                 @Valid @RequestBody EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
+    public EventRequestStatusUpdateResult approveRequestsByEvent(
+            @PathVariable long userId,
+            @PathVariable long eventId,
+            @Valid @RequestBody EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
         log.info(InfoMessageManager.GET_REQUEST_APPROVE_REQUESTS, eventId);
         return service.approveRequestsByEvent(userId, eventId,eventRequestStatusUpdateRequest);
     }

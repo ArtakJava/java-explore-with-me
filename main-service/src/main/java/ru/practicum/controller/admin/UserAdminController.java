@@ -11,6 +11,8 @@ import ru.practicum.messageManager.InfoMessageManager;
 import ru.practicum.service.admin.user.UserAdminService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -35,9 +37,10 @@ public class UserAdminController {
     }
 
     @GetMapping
-    public List<UserDto> getUsers(@RequestParam(required = false) long[] ids,
-                                  @RequestParam(defaultValue = "0") int from,
-                                  @RequestParam(defaultValue = ConstantManager.DEFAULT_SIZE_OF_PAGE_USERS) int size) {
+    public List<UserDto> getUsers(
+            @RequestParam(required = false) long[] ids,
+            @RequestParam(defaultValue = ConstantManager.DEFAULT_PAGE_PARAMETER_FROM) @PositiveOrZero int from,
+            @RequestParam(defaultValue = ConstantManager.DEFAULT_SIZE_OF_PAGE_USERS) @Positive int size) {
         log.info(InfoMessageManager.GET_ALL_USERS_REQUEST);
         return service.getUsers(ids, new PageRequestCustom(from, size, ConstantManager.SORT_USERS_BY_ID_ASC));
     }

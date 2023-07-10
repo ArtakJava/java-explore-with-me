@@ -23,4 +23,8 @@ public class ConstantManager {
     public static final Sort SORT_CATEGORIES_BY_ID_DESC = Sort.by("id").descending();
     public static final String DEFAULT_SIZE_OF_PAGE_COMPILATIONS = "10";
     public static final Sort SORT_COMPILATIONS_BY_ID_DESC = Sort.by("id").descending();
+    public static final String DEFAULT_PAGE_PARAMETER_PINNED_FOR_GET_ALL_COMPILATIONS = "false";
+    public static final String DEFAULT_PAGE_PARAMETER_FROM = "0";
+    public static final String DEFAULT_PAGE_PARAMETER_ONLY_AVAILABLE_FOR_GET_ALL_EVENTS = "false";
+    public static final String DEFAULT_PAGE_PARAMETER_SORT_FOR_GET_ALL_EVENTS = "EVENT_DATE";
 }

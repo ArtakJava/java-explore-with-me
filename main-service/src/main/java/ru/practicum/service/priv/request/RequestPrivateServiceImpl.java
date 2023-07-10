@@ -2,6 +2,7 @@ package ru.practicum.service.priv.request;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.service.AbstractServiceImpl;
 import ru.practicum.dto.enums.EventState;
 import ru.practicum.dto.enums.RequestState;
@@ -18,6 +19,7 @@ import ru.practicum.repository.*;
 
 import java.util.List;
 
+@Transactional
 @Service
 @Slf4j
 public class RequestPrivateServiceImpl extends AbstractServiceImpl implements RequestPrivateService {
@@ -54,6 +56,7 @@ public class RequestPrivateServiceImpl extends AbstractServiceImpl implements Re
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ParticipationRequestDto> getAllUserEventRequests(long userId) {
         User user = userRepository.getReferenceById(userId);
@@ -73,6 +76,7 @@ public class RequestPrivateServiceImpl extends AbstractServiceImpl implements Re
         return result;
     }
 
+    @Transactional(readOnly = true)
     private void validateRequesterIdInEvent(long userId, Event event) {
         List<Long> requesterIdsInEvent = requestRepository.findAllRequesterIdsInEvent(event.getId());
         if (event.getInitiator().getId() == userId) {

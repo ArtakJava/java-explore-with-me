@@ -2,6 +2,7 @@ package ru.practicum.service.pub.compilation;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.service.AbstractServiceImpl;
 import ru.practicum.dto.event.pageParameter.PageRequestCustom;
 import ru.practicum.constantManager.ConstantManager;
@@ -14,6 +15,7 @@ import ru.practicum.service.admin.compilation.CompilationMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 @Slf4j
 public class CompilationPublicServiceImpl extends AbstractServiceImpl implements CompilationPublicService {

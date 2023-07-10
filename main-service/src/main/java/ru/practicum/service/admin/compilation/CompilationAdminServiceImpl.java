@@ -2,6 +2,7 @@ package ru.practicum.service.admin.compilation;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.service.AbstractServiceImpl;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.compilation.CompilationDto;
@@ -14,6 +15,7 @@ import ru.practicum.repository.*;
 
 import java.util.List;
 
+@Transactional
 @Service
 @Slf4j
 public class CompilationAdminServiceImpl extends AbstractServiceImpl implements CompilationAdminService {
@@ -64,6 +66,7 @@ public class CompilationAdminServiceImpl extends AbstractServiceImpl implements 
         return resultDto;
     }
 
+    @Transactional(readOnly = true)
     private Compilation getUpdatedCompilation(Compilation compilation, UpdateCompilationRequest updateCompilationRequest) {
         if (updateCompilationRequest.getEvents() != null) {
             List<Event> events = eventRepository.findByIdIn(updateCompilationRequest.getEvents());

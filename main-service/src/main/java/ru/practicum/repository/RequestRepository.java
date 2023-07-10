@@ -12,12 +12,12 @@ public interface RequestRepository extends JpaRepository<ParticipationRequest, L
 
     @Query("select count(requester_id) " +
             "from ParticipationRequest as r " +
-            "where r.event.id = ?1 and state = 'CONFIRMED'")
+            "where r.event.id = :eventId and state = 'CONFIRMED'")
     Integer findConfirmedParticipationCount(long eventId);
 
     @Query("select requester.id " +
             "from ParticipationRequest as r " +
-            "where r.event.id = ?1")
+            "where r.event.id = :eventId")
     List<Long> findAllRequesterIdsInEvent(long eventId);
 
     List<ParticipationRequest> findAllByRequesterId(long userId);

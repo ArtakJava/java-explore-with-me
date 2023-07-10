@@ -10,7 +10,7 @@ public class ApiError {
     private HttpStatus status;
     private String reason;
     private String message;
-    private final String timestamp = LocalDateTime.now().toString();
+    private final LocalDateTime timestamp = LocalDateTime.now();
 
     public ApiError(HttpStatus status, String reason, String message) {
         this.status = status;

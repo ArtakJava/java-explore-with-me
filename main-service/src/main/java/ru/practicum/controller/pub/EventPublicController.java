@@ -13,6 +13,8 @@ import ru.practicum.messageManager.InfoMessageManager;
 import ru.practicum.service.pub.event.EventPublicService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,10 +32,10 @@ public class EventPublicController {
             @RequestParam(required = false) boolean paid,
             @RequestParam(required = false) @DateTimeFormat(pattern = ConstantManager.DATE_PATTERN) LocalDateTime rangeStart,
             @RequestParam(required = false) @DateTimeFormat(pattern = ConstantManager.DATE_PATTERN) LocalDateTime rangeEnd,
-            @RequestParam(defaultValue = "false") boolean onlyAvailable,
-            @RequestParam(defaultValue = "EVENT_DATE") String sort,
-            @RequestParam(defaultValue = "0") int from,
-            @RequestParam(defaultValue = ConstantManager.DEFAULT_SIZE_OF_PAGE_EVENTS) int size,
+            @RequestParam(defaultValue = ConstantManager.DEFAULT_PAGE_PARAMETER_ONLY_AVAILABLE_FOR_GET_ALL_EVENTS) boolean onlyAvailable,
+            @RequestParam(defaultValue = ConstantManager.DEFAULT_PAGE_PARAMETER_SORT_FOR_GET_ALL_EVENTS) String sort,
+            @RequestParam(defaultValue = ConstantManager.DEFAULT_PAGE_PARAMETER_FROM) @PositiveOrZero int from,
+            @RequestParam(defaultValue = ConstantManager.DEFAULT_SIZE_OF_PAGE_EVENTS) @Positive int size,
             HttpServletRequest request) {
         log.info(InfoMessageManager.GET_ALL_EVENTS_REQUEST);
         return service.getEvents(

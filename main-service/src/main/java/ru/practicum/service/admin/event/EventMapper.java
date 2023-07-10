@@ -49,20 +49,6 @@ public class EventMapper {
                 .build();
     }
 
-    public static Event mapToEventEntity(EventFullDto eventFullDto) {
-        return Event.builder()
-                .annotation(eventFullDto.getAnnotation())
-                .description(eventFullDto.getDescription())
-                .eventDate(eventFullDto.getEventDate())
-                .lat(eventFullDto.getLocation().getLat())
-                .lon(eventFullDto.getLocation().getLon())
-                .paid(eventFullDto.getPaid())
-                .participantLimit(eventFullDto.getParticipantLimit())
-                .requestModeration(eventFullDto.getRequestModeration())
-                .title(eventFullDto.getTitle())
-                .build();
-    }
-
     public static EventFullDto mapToEventFullDto(Event event, long confirmedRequests, long views) {
         return EventFullDto.builder()
                 .annotation(event.getAnnotation())

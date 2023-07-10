@@ -13,6 +13,8 @@ import ru.practicum.messageManager.InfoMessageManager;
 import ru.practicum.service.admin.event.EventAdminService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,14 +32,16 @@ public class EventAdminController {
     }
 
     @GetMapping
-    public List<EventFullDto> getEvents(@RequestParam(required = false) long[] users,
-                                        @RequestParam(required = false) String[] states,
-                                        @RequestParam(required = false) long[] categories,
-                                        @RequestParam(required = false) @DateTimeFormat(pattern = ConstantManager.DATE_PATTERN) LocalDateTime rangeStart,
-                                        @RequestParam(required = false) @DateTimeFormat(pattern = ConstantManager.DATE_PATTERN) LocalDateTime rangeEnd,
-                                        @RequestParam(defaultValue = "0") int from,
-                                        @RequestParam(defaultValue = ConstantManager.DEFAULT_SIZE_OF_PAGE_EVENTS) int size) {
+    public List<EventFullDto> getEvents(
+            @RequestParam(required = false) long[] users,
+            @RequestParam(required = false) String[] states,
+            @RequestParam(required = false) long[] categories,
+            @RequestParam(required = false) @DateTimeFormat(pattern = ConstantManager.DATE_PATTERN) LocalDateTime rangeStart,
+            @RequestParam(required = false) @DateTimeFormat(pattern = ConstantManager.DATE_PATTERN) LocalDateTime rangeEnd,
+            @RequestParam(defaultValue = ConstantManager.DEFAULT_PAGE_PARAMETER_FROM) @PositiveOrZero int from,
+            @RequestParam(defaultValue = ConstantManager.DEFAULT_SIZE_OF_PAGE_EVENTS) @Positive int size) {
         log.info(InfoMessageManager.GET_ALL_USERS_REQUEST);
+        PageRequestCustom pageRequest = new PageRequestCustom(from, size, ConstantManager.SORT_EVENTS_BY_EVENT_DATE);
         return service.getEvents(
                 new EventAdminPageParameter(
                         users,
@@ -45,7 +49,7 @@ public class EventAdminController {
                         categories,
                         rangeStart,
                         rangeEnd,
-                        new PageRequestCustom(from, size, ConstantManager.SORT_EVENTS_BY_EVENT_DATE)
+                        pageRequest
                 )
         );
     }

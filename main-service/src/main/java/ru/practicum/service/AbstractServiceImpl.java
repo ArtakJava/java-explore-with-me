@@ -2,6 +2,7 @@ package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.dto.request.UpdateEventRequest;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Transactional
 @RequiredArgsConstructor
 public class AbstractServiceImpl implements AbstractService {
     protected final RequestRepository requestRepository;
@@ -32,11 +34,13 @@ public class AbstractServiceImpl implements AbstractService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public long getConfirmedRequestsCount(long eventId) {
         return requestRepository.findConfirmedParticipationCount(eventId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Map<Long, Integer> getConfirmedRequestsByEvent(List<Event> events) {
         List<ParticipationRequest> requests = requestRepository.findByEventIdInAndState(
@@ -100,6 +104,7 @@ public class AbstractServiceImpl implements AbstractService {
         return views;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public void validateParticipantLimit(Event event) {
         if (requestRepository.findConfirmedParticipationCount(event.getId()).equals(event.getParticipantLimit())) {
@@ -109,6 +114,7 @@ public class AbstractServiceImpl implements AbstractService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Event getUpdatedEvent(Event event, UpdateEventRequest updateEventRequest) {
         if (updateEventRequest.getAnnotation() != null) {

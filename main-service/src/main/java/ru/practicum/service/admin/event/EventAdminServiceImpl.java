@@ -2,6 +2,7 @@ package ru.practicum.service.admin.event;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.pageParameter.EventAdminPageParameter;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 @Slf4j
 public class EventAdminServiceImpl extends AbstractServiceImpl implements EventAdminService {
@@ -49,6 +51,7 @@ public class EventAdminServiceImpl extends AbstractServiceImpl implements EventA
         return resultDto;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EventFullDto> getEvents(EventAdminPageParameter eventAdminPageParameter) {
         List<Event> events = new ArrayList<>();

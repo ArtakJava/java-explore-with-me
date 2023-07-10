@@ -2,6 +2,7 @@ package ru.practicum.service.pub.event;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.event.EventFullDto;
@@ -29,6 +30,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 @Slf4j
 public class EventPublicServiceImpl extends AbstractServiceImpl implements EventPublicService {

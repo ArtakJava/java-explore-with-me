@@ -2,6 +2,7 @@ package ru.practicum.service.priv.event;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.event.*;
 import ru.practicum.dto.enums.EventRequestStateUpdate;
@@ -29,6 +30,7 @@ import ru.practicum.service.priv.request.RequestMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 @Slf4j
 public class EventPrivateServiceImpl extends AbstractServiceImpl implements EventPrivateService {
@@ -59,6 +61,7 @@ public class EventPrivateServiceImpl extends AbstractServiceImpl implements Even
         return result;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EventShortDto> getAllUserEvents(long userId, PageRequestCustom pageRequestCustom) {
         User user = userRepository.getReferenceById(userId);
@@ -72,6 +75,7 @@ public class EventPrivateServiceImpl extends AbstractServiceImpl implements Even
         return result;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public EventFullDto getUserEvent(long userId, long eventId) {
         User user = userRepository.getReferenceById(userId);
@@ -105,6 +109,7 @@ public class EventPrivateServiceImpl extends AbstractServiceImpl implements Even
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ParticipationRequestDto> getAllUserEventRequests(long userId, long eventId) {
         User user = userRepository.getReferenceById(userId);
@@ -136,6 +141,7 @@ public class EventPrivateServiceImpl extends AbstractServiceImpl implements Even
                 .build();
     }
 
+    @Transactional(readOnly = true)
     private List<ParticipationRequestDto> getAllRequestsByIdInAndState(List<Long> requestIds, RequestState state) {
         return requestRepository.findAllByIdInAndState(requestIds, state)
                 .stream()
