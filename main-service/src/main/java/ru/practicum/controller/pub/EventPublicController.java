@@ -3,6 +3,7 @@ package ru.practicum.controller.pub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.event.EventFullDto;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequestMapping("/events")
 @Slf4j
 @RequiredArgsConstructor
+@Validated
 public class EventPublicController {
     private final EventPublicService service;
 

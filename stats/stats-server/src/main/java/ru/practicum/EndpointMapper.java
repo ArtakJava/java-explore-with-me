@@ -25,7 +25,7 @@ public class EndpointMapper implements Serializable {
                 .app(endpointHitDto.getApp())
                 .uri(endpointHitDto.getUri())
                 .ip(endpointHitDto.getIp())
-                .timestamp(LocalDateTime.parse(endpointHitDto.getTimestamp(), ConstantManager.formatter))
+                .timestamp(LocalDateTime.parse(endpointHitDto.getTimestamp(), ConstantManager.FORMATTER))
                 .build();
     }
 }

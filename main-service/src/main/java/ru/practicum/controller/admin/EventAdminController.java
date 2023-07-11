@@ -3,6 +3,7 @@ package ru.practicum.controller.admin;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.event.pageParameter.EventAdminPageParameter;
 import ru.practicum.dto.event.pageParameter.PageRequestCustom;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequestMapping("/admin/events")
 @Slf4j
 @RequiredArgsConstructor
+@Validated
 public class EventAdminController {
     private final EventAdminService service;
 

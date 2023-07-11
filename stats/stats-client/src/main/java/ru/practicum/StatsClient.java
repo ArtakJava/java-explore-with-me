@@ -11,8 +11,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.dto.EndpointHitDto;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +32,8 @@ public class StatsClient {
 
     public ResponseEntity<Object[]> stats(String start, String end, String[] uris, boolean unique) {
         Map<String, Object> parameters = new HashMap<>(Map.of(
-                "start", URLEncoder.encode(String.valueOf(start), StandardCharsets.UTF_8),
-                "end", URLEncoder.encode(String.valueOf(end), StandardCharsets.UTF_8),
+                "start", start,
+                "end", end,
                 "unique", unique
         ));
         if (uris != null) {
