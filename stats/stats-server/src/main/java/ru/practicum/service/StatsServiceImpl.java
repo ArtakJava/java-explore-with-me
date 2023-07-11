@@ -12,6 +12,7 @@ import ru.practicum.model.EndpointHit;
 import ru.practicum.repository.StatsRepository;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -31,7 +32,7 @@ public class StatsServiceImpl implements StatsService {
     public List<ViewStatsDto> stats(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
         dateIsValid(start, end);
         List<ViewStatsDto> result;
-        if (uris != null) {
+        if (uris != null && isNotHaveEventInUris(uris)) {
             if (unique) {
                 result = statsRepository.findDistinctByIpAndTimestampBetweenAndEventIdIn(start, end, uris);
             } else {
@@ -46,6 +47,10 @@ public class StatsServiceImpl implements StatsService {
         }
         log.info(MessageManager.GET_REQUEST_STATS_SUCCESS, start, end);
         return result;
+    }
+
+    private boolean isNotHaveEventInUris(String[] uris) {
+        return !Arrays.asList(uris).contains("/events");
     }
 
     private void dateIsValid(LocalDateTime start, LocalDateTime end) {

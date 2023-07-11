@@ -16,6 +16,6 @@ public class EndpointHitDto {
     private String uri;
     @NotBlank
     private String ip;
-    @JsonFormat(pattern = ConstantManager.datePattern)
+    @JsonFormat(pattern = ConstantManager.DATE_PATTERN)
     private String timestamp;
 }

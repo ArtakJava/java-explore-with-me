@@ -30,10 +30,10 @@ public class StatsController {
 
     @GetMapping("/stats")
     public List<ViewStatsDto> stats(
-            @RequestParam @DateTimeFormat(pattern = ConstantManager.datePattern) LocalDateTime start,
-            @RequestParam @DateTimeFormat(pattern = ConstantManager.datePattern) LocalDateTime end,
+            @RequestParam @DateTimeFormat(pattern = ConstantManager.DATE_PATTERN) LocalDateTime start,
+            @RequestParam @DateTimeFormat(pattern = ConstantManager.DATE_PATTERN) LocalDateTime end,
             @RequestParam(required = false) String[] uris,
-            @RequestParam(defaultValue = "false") boolean unique) {
+            @RequestParam(defaultValue = ConstantManager.DEFAULT_UNIQUE_PARAMETER) boolean unique) {
         log.info(MessageManager.GET_REQUEST_STATS, start, end);
         return service.stats(start, end, uris, unique);
     }
