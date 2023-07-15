@@ -2354,12 +2354,12 @@
 													"    pm.response.to.be.json;\r",
 													"});\r",
 													"\r",
-													"const target = pm.response.json()[0];\r",
+													"const target = pm.response.json();\r",
 													"const source = pm.collectionVariables.get('responseArr');\r",
 													"newSourceArr = Array.from(source, (x) => x.id);\r",
 													"\r",
 													"pm.test(\"Значение size по-умолчанию должно быть равным 10\", function () {\r",
-													"    pm.expect(target.comments).equal(11);\r",
+													"    pm.expect(target.length).equal(10);\r",
 													"});\r",
 													""
 												],
@@ -2376,12 +2376,13 @@
 											}
 										],
 										"url": {
-											"raw": "{{baseUrl}}/events",
+											"raw": "{{baseUrl}}/admin/comments",
 											"host": [
 												"{{baseUrl}}"
 											],
 											"path": [
-												"events"
+												"admin",
+												"comments"
 											],
 											"query": [
 												{
@@ -3330,7 +3331,6 @@
 									"        pm.collectionVariables.set(\"uid\", user.id);\r",
 									"        pm.collectionVariables.set('response', findedEvent);\r",
 									"        pm.collectionVariables.set(\"eventId\", findedEvent.id);\r",
-									"        pm.collectionVariables.set(\"comId\", comment.id);\r",
 									"    } catch(err) {\r",
 									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
 									"    }\r",
