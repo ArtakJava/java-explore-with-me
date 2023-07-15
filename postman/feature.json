@@ -551,7 +551,7 @@
 													"    pm.expect(source.author.id).equal(target.author.id, 'Автор отменённого комментария должен соответствовать автору комментария до отмены');\r",
 													"});\r",
 													"\r",
-													"pm.test(\"Событие должно иметь статус CANCELED при возвращении от администратора и статус PENDING после выполнения запроса\", function () {\r",
+													"pm.test(\"Комментарий должен иметь статус CANCELED при возвращении от администратора и статус PENDING после выполнения запроса\", function () {\r",
 													"    pm.expect(target.state).equal(\"PENDING\");\r",
 													"});"
 												],
@@ -2243,7 +2243,7 @@
 													"    pm.expect(target[0].id).to.be.equal(responseWithFrom[0].id, 'Запросы с from=0 и без него должны начинаться с одного и того же события');\r",
 													"});\r",
 													"\r",
-													"pm.test(\"Все найденные события должны быть в списке добавленных\", function () {\r",
+													"pm.test(\"Все найденные комментарии должны быть в списке добавленных\", function () {\r",
 													"    source.forEach(function(x){pm.expect(newSourceArr).to.include(x.id)});\r",
 													"});"
 												],
@@ -2774,6 +2774,10 @@
 								"value": "application/json"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{request_body}}"
+						},
 						"url": {
 							"raw": "{{baseUrl}}/users/:userId/events/:eventId/comments",
 							"host": [
