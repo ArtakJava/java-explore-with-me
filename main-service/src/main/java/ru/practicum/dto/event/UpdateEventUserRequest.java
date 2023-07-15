@@ -1,4 +1,4 @@
-package ru.practicum.dto.request;
+package ru.practicum.dto.event;
 
 import lombok.*;
 import ru.practicum.dto.enums.UserStateAction;

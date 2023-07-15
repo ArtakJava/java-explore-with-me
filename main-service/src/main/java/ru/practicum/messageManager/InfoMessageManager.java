@@ -15,6 +15,8 @@ public class InfoMessageManager {
             "Получен запрос на получение списка событий от пользователя с ID - {}.";
     public static final String SUCCESS_USER_ALL_EVENTS_REQUEST =
             "Запрос на получение списка событий от пользователя с ID - {} успешно выполнен.";
+    public static final String SUCCESS_USER_EVENT_COMMENT =
+            "Запрос на получение списка комментариев от пользователя с ID - {} успешно выполнен.";
     public static final String GET_USER_EVENT_REQUEST = "Получен запрос на получение события ID - {}.";
     public static final String SUCCESS_USER_EVENT_REQUEST = "Запрос на получение события ID - {} от пользователя с ID - {}.";
     public static final String GET_USER_EVENT_REQUESTS =
@@ -31,6 +33,8 @@ public class InfoMessageManager {
     public static final String SUCCESS_GET_CATEGORY = "Запрос на получение категории с ID - {} успешно выполнен.";
     public static final String GET_ALL_EVENTS_REQUEST = "Получен запрос на получение списка всех событий.";
     public static final String SUCCESS_GET_ALL_EVENTS = "Запрос на получение списка всех событий успешно выполнен.";
+    public static final String GET_ALL_COMMENTS_REQUEST = "Получен запрос на получение списка всех комментариев.";
+    public static final String SUCCESS_GET_ALL_COMMENTS = "Запрос на получение списка всех комментариев успешно выполнен.";
     public static final String GET_EVENT_BY_ID_REQUEST = "Получен запрос на получение события с ID - {}.";
     public static final String SUCCESS_EVENT_REQUEST = "Запрос на получение события с ID - {} успешно выполнен.";
     public static final String POST_REQUEST_IN_EVENT = "Получен запрос на участие в событии с ID - {}.";
@@ -49,4 +53,9 @@ public class InfoMessageManager {
     public static final String GET_COMPILATION_REQUEST = "Получен запрос на получение подборки событий с ID - {}.";
     public static final String SUCCESS_COMPILATION_REQUEST =
             "Запрос на получение подборки событий с ID - {} успешно выполнен.";
+    public static final String POST_REQUEST_COMMENT =
+            "Получен запрос на создание комментария {} пользователем с ID - {} на событие с ID - {}.";
+    public static final String SUCCESS_REQUEST_COMMENT =
+            "Запрос на создание комментария {} пользователем с ID - {} на событие с ID - {} успешно выполнен.";
+    public static final String PATCH_REQUEST_COMMENT = "Получен запрос на обновление комментария с ID - {} на - {}.";
 }

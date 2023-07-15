@@ -74,7 +74,18 @@ public class ErrorHandler {
 
     @ExceptionHandler(EventAlreadyPublishedException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiError handleMethodNotPublishedEventException(final EventAlreadyPublishedException e) {
+    public ApiError handleMethodEventAlreadyPublishedException(final EventAlreadyPublishedException e) {
+        log.info("409 {}", e.getMessage());
+        return new ApiError(
+                HttpStatus.CONFLICT,
+                ErrorMessageManager.CONFLICT,
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(CommentAlreadyPublishedOrRejectedException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleMethodCommentAlreadyPublishedException(final CommentAlreadyPublishedOrRejectedException e) {
         log.info("409 {}", e.getMessage());
         return new ApiError(
                 HttpStatus.CONFLICT,
@@ -90,6 +101,17 @@ public class ErrorHandler {
         return new ApiError(
                 HttpStatus.BAD_REQUEST,
                 ErrorMessageManager.INCORRECTLY_MADE_REQUEST,
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(UserNotAuthorCommentException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleMethodUserNotAuthorCommentException(final UserNotAuthorCommentException e) {
+        log.info("409 {}", e.getMessage());
+        return new ApiError(
+                HttpStatus.CONFLICT,
+                ErrorMessageManager.CONFLICT,
                 e.getMessage()
         );
     }

@@ -8,14 +8,16 @@ import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.enums.EventPublicSort;
-import ru.practicum.dto.enums.EventState;
+import ru.practicum.dto.enums.ModerationState;
 import ru.practicum.dto.enums.PageParameterCode;
 import ru.practicum.dto.event.pageParameter.EventPublicPageParameter;
+import ru.practicum.dto.event.pageParameter.PageRequestCustom;
 import ru.practicum.exception.EventNotPublishedException;
 import ru.practicum.exception.RangeParametersException;
 import ru.practicum.exception.UnSupportedSortException;
 import ru.practicum.messageManager.ErrorMessageManager;
 import ru.practicum.messageManager.InfoMessageManager;
+import ru.practicum.model.Comment;
 import ru.practicum.model.Event;
 import ru.practicum.repository.*;
 import ru.practicum.service.AbstractServiceImpl;
@@ -24,10 +26,7 @@ import ru.practicum.service.admin.event.EventMapper;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
@@ -40,8 +39,9 @@ public class EventPublicServiceImpl extends AbstractServiceImpl implements Event
             EventRepository eventRepository,
             UserRepository userRepository,
             CategoryRepository categoryRepository,
-            CompilationRepository compilationRepository) {
-        super(requestRepository, eventRepository, userRepository, categoryRepository, compilationRepository);
+            CompilationRepository compilationRepository,
+            CommentRepository commentRepository) {
+        super(requestRepository, eventRepository, userRepository, categoryRepository, compilationRepository, commentRepository);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class EventPublicServiceImpl extends AbstractServiceImpl implements Event
                 events = eventRepository.findByCategoryIdInAndEventDateAfterAndState(
                         eventPublicPageParameter.getCategories(),
                         LocalDateTime.now(),
-                        EventState.PUBLISHED,
+                        ModerationState.PUBLISHED,
                         eventPublicPageParameter.getPageRequest()
                 );
                 break;
@@ -67,14 +67,14 @@ public class EventPublicServiceImpl extends AbstractServiceImpl implements Event
                                 eventPublicPageParameter.getCategories(),
                                 eventPublicPageParameter.getPaid(),
                                 LocalDateTime.now(),
-                                EventState.PUBLISHED,
+                                ModerationState.PUBLISHED,
                                 eventPublicPageParameter.getPageRequest()
                         );
                 break;
             case WITHOUT_PARAMETERS:
                 events = eventRepository.findByEventDateAfterAndState(
                         LocalDateTime.now(),
-                        EventState.PUBLISHED,
+                        ModerationState.PUBLISHED,
                         eventPublicPageParameter.getPageRequest()
                 );
                 break;
@@ -87,7 +87,7 @@ public class EventPublicServiceImpl extends AbstractServiceImpl implements Event
                                 eventPublicPageParameter.getPaid(),
                                 eventPublicPageParameter.getRangeStart(),
                                 eventPublicPageParameter.getRangeEnd(),
-                                EventState.PUBLISHED,
+                                ModerationState.PUBLISHED,
                                 eventPublicPageParameter.getPageRequest()
                         );
                 break;
@@ -97,15 +97,15 @@ public class EventPublicServiceImpl extends AbstractServiceImpl implements Event
         if (EventPublicSort.EVENT_DATE.equals(EventPublicSort.valueOf(sort))) {
             result = EventMapper.mapToEventsShortDto(
                     events,
-                    getConfirmedRequestsByEvent(events),
-                    getViewsByEventId(events, ConstantManager.DEFAULT_UNIQUE_FOR_STATS)
+                    getConfirmedRequestsCountByEvent(events),
+                    getViewsByEventId(events, ConstantManager.DEFAULT_UNIQUE_FOR_STATS),
+                    getPublishedCommentsCountByEvent(events)
             );
         } else if ((EventPublicSort.VIEWS.equals(EventPublicSort.valueOf(sort)))) {
-            result = EventMapper.mapToEventsShortDto(
-                    events,
-                    getConfirmedRequestsByEvent(events),
-                    getViewsByEventId(events, true)
-                    ).stream()
+            result = EventMapper.mapToEventsShortDto(events,
+                            getConfirmedRequestsCountByEvent(events),
+                            getViewsByEventId(events, true),
+                            getPublishedCommentsCountByEvent(events)).stream()
                     .sorted(Comparator.comparingLong(EventShortDto::getViews))
                     .collect(Collectors.toList());
         } else {
@@ -121,14 +121,15 @@ public class EventPublicServiceImpl extends AbstractServiceImpl implements Event
         if (event.getAnnotation() == null) {
             throw new EntityNotFoundException(String.format(ErrorMessageManager.NOT_FOUND, eventId));
         }
-        if (!event.getState().equals(EventState.PUBLISHED)) {
+        if (!event.getState().equals(ModerationState.PUBLISHED)) {
             throw new EventNotPublishedException(String.format(ErrorMessageManager.EVENT_NOT_PUBLISHED, eventId));
         }
         addHit(request.getRequestURI(), request);
         EventFullDto result = EventMapper.mapToEventFullDto(
                 event,
                 getConfirmedRequestsCount(eventId),
-                getViews(event, ConstantManager.DEFAULT_UNIQUE_FOR_STATS)
+                getViews(event, ConstantManager.DEFAULT_UNIQUE_FOR_STATS),
+                getPublishedCommentsByEvent(eventId)
         );
         log.info(InfoMessageManager.SUCCESS_EVENT_REQUEST, event);
         return result;
@@ -151,5 +152,15 @@ public class EventPublicServiceImpl extends AbstractServiceImpl implements Event
                         .timestamp(LocalDateTime.now().format(ConstantManager.DATE_TIME_FORMATTER))
                         .build()
         );
+    }
+
+    private List<Comment> getPublishedCommentsByEvent(long eventId) {
+        PageRequestCustom pageRequestCustom = new PageRequestCustom(
+                Integer.parseInt(ConstantManager.DEFAULT_PAGE_PARAMETER_FROM),
+                Integer.parseInt(ConstantManager.DEFAULT_SIZE_OF_PAGE_COMMENTS),
+                ConstantManager.SORT_COMMENTS_BY_CREATE_DATE
+
+        );
+        return commentRepository.findByEventIdAndState(eventId, ModerationState.PUBLISHED, pageRequestCustom);
     }
 }

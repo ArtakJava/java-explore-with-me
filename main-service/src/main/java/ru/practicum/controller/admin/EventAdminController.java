@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.event.pageParameter.EventAdminPageParameter;
-import ru.practicum.dto.event.pageParameter.PageRequestCustom;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.event.EventFullDto;
-import ru.practicum.dto.request.UpdateEventAdminRequest;
+import ru.practicum.dto.event.UpdateEventAdminRequest;
+import ru.practicum.dto.event.pageParameter.EventAdminPageParameter;
+import ru.practicum.dto.event.pageParameter.PageRequestCustom;
 import ru.practicum.messageManager.InfoMessageManager;
 import ru.practicum.service.admin.event.EventAdminService;
 
@@ -28,9 +28,9 @@ public class EventAdminController {
     private final EventAdminService service;
 
     @PatchMapping("/{eventId}")
-    public EventFullDto update(@PathVariable long eventId, @Valid @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
+    public EventFullDto updateEvent(@PathVariable long eventId, @Valid @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
         log.info(InfoMessageManager.PATCH_REQUEST_EVENT, eventId, updateEventAdminRequest);
-        return service.update(eventId, updateEventAdminRequest);
+        return service.updateEvent(eventId, updateEventAdminRequest);
     }
 
     @GetMapping

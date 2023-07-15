@@ -1,4 +1,4 @@
-package ru.practicum.dto.request;
+package ru.practicum.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

@@ -4,24 +4,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.constantManager.ConstantManager;
+import ru.practicum.dto.comment.*;
+import ru.practicum.dto.enums.*;
 import ru.practicum.dto.event.*;
-import ru.practicum.dto.enums.EventRequestStateUpdate;
-import ru.practicum.dto.enums.EventState;
-import ru.practicum.dto.enums.RequestState;
-import ru.practicum.dto.enums.UserStateAction;
 import ru.practicum.dto.event.pageParameter.PageRequestCustom;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.dto.request.ParticipationRequestDto;
-import ru.practicum.dto.request.UpdateEventUserRequest;
+import ru.practicum.dto.event.UpdateEventUserRequest;
 import ru.practicum.exception.EventAlreadyPublishedException;
+import ru.practicum.exception.EventNotPublishedForRequestException;
 import ru.practicum.exception.RequestAlreadyConfirmedException;
+import ru.practicum.exception.UserNotAuthorCommentException;
 import ru.practicum.messageManager.ErrorMessageManager;
 import ru.practicum.messageManager.InfoMessageManager;
-import ru.practicum.model.Category;
-import ru.practicum.model.Event;
-import ru.practicum.model.ParticipationRequest;
-import ru.practicum.model.User;
+import ru.practicum.model.*;
 import ru.practicum.repository.*;
 import ru.practicum.service.AbstractServiceImpl;
 import ru.practicum.service.admin.event.EventMapper;
@@ -40,8 +37,9 @@ public class EventPrivateServiceImpl extends AbstractServiceImpl implements Even
             EventRepository eventRepository,
             UserRepository userRepository,
             CategoryRepository categoryRepository,
-            CompilationRepository compilationRepository) {
-        super(requestRepository, eventRepository, userRepository, categoryRepository, compilationRepository);
+            CompilationRepository compilationRepository,
+            CommentRepository commentRepository) {
+        super(requestRepository, eventRepository, userRepository, categoryRepository, compilationRepository, commentRepository);
     }
 
     @Override
@@ -55,7 +53,8 @@ public class EventPrivateServiceImpl extends AbstractServiceImpl implements Even
         EventFullDto result = EventMapper.mapToEventFullDto(
                 eventRepository.save(event),
                 getConfirmedRequestsCount(event.getId()),
-                getViews(event, ConstantManager.DEFAULT_UNIQUE_FOR_STATS)
+                getViews(event, ConstantManager.DEFAULT_UNIQUE_FOR_STATS),
+                getCommentsByEvent(event.getId())
         );
         log.info(InfoMessageManager.SUCCESS_CREATE, result);
         return result;
@@ -66,10 +65,12 @@ public class EventPrivateServiceImpl extends AbstractServiceImpl implements Even
     public List<EventShortDto> getAllUserEvents(long userId, PageRequestCustom pageRequestCustom) {
         User user = userRepository.getReferenceById(userId);
         List<Event> events = eventRepository.findByInitiatorId(userId, pageRequestCustom);
+
         List<EventShortDto> result = EventMapper.mapToEventsShortDto(
                 events,
-                getConfirmedRequestsByEvent(events),
-                getViewsByEventId(events, ConstantManager.DEFAULT_UNIQUE_FOR_STATS)
+                getConfirmedRequestsCountByEvent(events),
+                getViewsByEventId(events, ConstantManager.DEFAULT_UNIQUE_FOR_STATS),
+                getPublishedCommentsCountByEvent(events)
         );
         log.info(InfoMessageManager.SUCCESS_USER_ALL_EVENTS_REQUEST, userId);
         return result;
@@ -83,24 +84,26 @@ public class EventPrivateServiceImpl extends AbstractServiceImpl implements Even
         EventFullDto result = EventMapper.mapToEventFullDto(
                 event,
                 getConfirmedRequestsCount(eventId),
-                getViews(event, ConstantManager.DEFAULT_UNIQUE_FOR_STATS)
+                getViews(event, ConstantManager.DEFAULT_UNIQUE_FOR_STATS),
+                getCommentsByEvent(eventId)
         );
         log.info(InfoMessageManager.SUCCESS_USER_EVENT_REQUEST, eventId, userId);
         return result;
     }
 
     @Override
-    public EventFullDto patchUserEvent(long userId, long eventId, UpdateEventUserRequest updateEventUserRequest) {
+    public EventFullDto updateEvent(long userId, long eventId, UpdateEventUserRequest updateEventUserRequest) {
         validateEventDate(updateEventUserRequest.getEventDate());
         User user = userRepository.getReferenceById(userId);
         Event oldEvent = eventRepository.getReferenceById(eventId);
-        if (!oldEvent.getState().equals(EventState.PUBLISHED)) {
+        if (!oldEvent.getState().equals(ModerationState.PUBLISHED)) {
             Event event = eventRepository.save(getEvent(oldEvent, updateEventUserRequest));
             log.info(InfoMessageManager.SUCCESS_REQUEST_EVENT, eventId, userId);
             return EventMapper.mapToEventFullDto(
                     event,
                     getConfirmedRequestsCount(eventId),
-                    getViews(event, ConstantManager.DEFAULT_UNIQUE_FOR_STATS)
+                    getViews(event, ConstantManager.DEFAULT_UNIQUE_FOR_STATS),
+                    getCommentsByEvent(eventId)
             );
         } else {
             throw new EventAlreadyPublishedException(
@@ -141,6 +144,56 @@ public class EventPrivateServiceImpl extends AbstractServiceImpl implements Even
                 .build();
     }
 
+    @Override
+    public CommentFullDto createComment(long userId, long eventId, NewCommentDto newCommentDto) {
+        Event event = eventRepository.getReferenceById(eventId);
+        if (event.getState().equals(ModerationState.PUBLISHED)) {
+            User user = userRepository.getReferenceById(userId);
+            Comment comment = CommentMapper.mapToCommentEntity(user, event, newCommentDto);
+            CommentFullDto result = CommentMapper.mapToCommentFullDto(commentRepository.save(comment));
+            log.info(InfoMessageManager.SUCCESS_REQUEST_COMMENT, newCommentDto, userId, eventId);
+            return result;
+        } else {
+            throw new EventNotPublishedForRequestException(
+                    String.format(ErrorMessageManager.EVENT_NOT_PUBLISHED, eventId)
+            );
+        }
+    }
+
+    @Override
+    public CommentFullDto updateComment(long userId, long commentId, UpdateCommentUserRequest updateCommentUserRequest) {
+        User user = userRepository.getReferenceById(userId);
+        Comment oldComment = commentRepository.getReferenceById(commentId);
+        if (oldComment.getAuthor().getId() != userId) {
+            throw new UserNotAuthorCommentException(
+                    String.format(ErrorMessageManager.USER_NOT_AUTHOR, userId, commentId)
+            );
+        }
+        Comment comment = commentRepository.save(getComment(oldComment, updateCommentUserRequest));
+        CommentFullDto resultDto = CommentMapper.mapToCommentFullDto(comment);
+        log.info(InfoMessageManager.SUCCESS_PATCH, commentId, updateCommentUserRequest);
+        return resultDto;
+    }
+
+    @Override
+    public void deleteComment(long userId, long commentId) {
+        User user = userRepository.getReferenceById(userId);
+        Comment comment = commentRepository.getReferenceById(commentId);
+        commentRepository.delete(comment);
+        log.info(InfoMessageManager.SUCCESS_DELETE, comment);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CommentShortDto> getAllComments(long userId, PageRequestCustom pageRequestCustom) {
+        User user = userRepository.getReferenceById(userId);
+        List<Comment> comments = commentRepository.findAllByAuthorId(userId, pageRequestCustom);
+        log.info(InfoMessageManager.SUCCESS_USER_EVENT_COMMENT, userId);
+        return comments.stream()
+                .map(CommentMapper::mapToCommentFullDto)
+                .collect(Collectors.toList());
+    }
+
     @Transactional(readOnly = true)
     private List<ParticipationRequestDto> getAllRequestsByIdInAndState(List<Long> requestIds, RequestState state) {
         return requestRepository.findAllByIdInAndState(requestIds, state)
@@ -151,9 +204,9 @@ public class EventPrivateServiceImpl extends AbstractServiceImpl implements Even
 
     private Event getEvent(Event event, UpdateEventUserRequest updateEventUserRequest) {
         if (UserStateAction.SEND_TO_REVIEW.equals(updateEventUserRequest.getStateAction())) {
-            event.setState(EventState.PENDING);
+            event.setState(ModerationState.PENDING);
         } else if (UserStateAction.CANCEL_REVIEW.equals(updateEventUserRequest.getStateAction())) {
-            event.setState(EventState.CANCELED);
+            event.setState(ModerationState.CANCELED);
         }
         return getUpdatedEvent(event, updateEventUserRequest);
     }
@@ -181,5 +234,14 @@ public class EventPrivateServiceImpl extends AbstractServiceImpl implements Even
         } else {
             request.setState(requestState);
         }
+    }
+
+    private Comment getComment(Comment comment, UpdateCommentUserRequest updateCommentUserRequest) {
+        if (UserStateAction.SEND_TO_REVIEW.equals(updateCommentUserRequest.getStateAction())) {
+            comment.setState(ModerationState.PENDING);
+        } else if (UserStateAction.CANCEL_REVIEW.equals(updateCommentUserRequest.getStateAction())) {
+            comment.setState(ModerationState.CANCELED);
+        }
+        return getUpdatedComment(comment, updateCommentUserRequest);
     }
 }
