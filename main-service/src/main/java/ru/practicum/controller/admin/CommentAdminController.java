@@ -37,10 +37,8 @@ public class CommentAdminController {
             @RequestParam(required = false) String[] states,
             @RequestParam(defaultValue = ConstantManager.DEFAULT_PAGE_PARAMETER_FROM) @PositiveOrZero int from,
             @RequestParam(defaultValue = ConstantManager.DEFAULT_SIZE_OF_PAGE_COMMENTS) @Positive int size) {
+        PageRequestCustom pageRequest = new PageRequestCustom(from, size, ConstantManager.SORT_COMMENTS_BY_CREATE_DATE);
         log.info(InfoMessageManager.GET_ALL_COMMENTS_REQUEST);
-        return service.getComments(
-                states,
-                new PageRequestCustom(from, size, ConstantManager.SORT_COMMENTS_BY_CREATE_DATE)
-        );
+        return service.getComments(states, pageRequest);
     }
 }
