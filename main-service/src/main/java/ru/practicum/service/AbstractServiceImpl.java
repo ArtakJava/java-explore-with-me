@@ -5,11 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.constantManager.ConstantManager;
 import ru.practicum.dto.ViewStatsDto;
-import ru.practicum.dto.request.UpdateEventRequest;
+import ru.practicum.dto.comment.UpdateCommentRequest;
+import ru.practicum.dto.enums.ModerationState;
+import ru.practicum.dto.event.UpdateEventRequest;
 import ru.practicum.dto.enums.RequestState;
 import ru.practicum.exception.EventDateException;
 import ru.practicum.exception.EventParticipantLimitException;
 import ru.practicum.messageManager.ErrorMessageManager;
+import ru.practicum.model.Comment;
 import ru.practicum.model.Event;
 import ru.practicum.model.ParticipationRequest;
 import ru.practicum.repository.*;
@@ -26,6 +29,7 @@ public class AbstractServiceImpl implements AbstractService {
     protected final UserRepository userRepository;
     protected final CategoryRepository categoryRepository;
     protected final CompilationRepository compilationRepository;
+    protected final CommentRepository commentRepository;
 
     @Override
     public void validateEventDate(LocalDateTime eventDate) {
@@ -42,7 +46,7 @@ public class AbstractServiceImpl implements AbstractService {
 
     @Transactional(readOnly = true)
     @Override
-    public Map<Long, Integer> getConfirmedRequestsByEvent(List<Event> events) {
+    public Map<Long, Integer> getConfirmedRequestsCountByEvent(List<Event> events) {
         List<ParticipationRequest> requests = requestRepository.findByEventIdInAndState(
                 events.stream()
                         .map(Event::getId)
@@ -51,12 +55,23 @@ public class AbstractServiceImpl implements AbstractService {
         );
         Map<Long, List<ParticipationRequest>> confirmedRequestsByEvent = requests.stream()
                 .collect(Collectors.groupingBy(request -> request.getEvent().getId()));
-        return requests.stream()
-                .collect(Collectors.toMap(
-                        request -> request.getEvent().getId(),
-                        request -> confirmedRequestsByEvent.get(request.getEvent().getId()).size()
-                        )
-                );
+        return confirmedRequestsByEvent.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entrySet -> entrySet.getValue().size()));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Map<Long, Integer> getPublishedCommentsCountByEvent(List<Event> events) {
+        List<Comment> comments = commentRepository.findByEventIdInAndState(
+                events.stream()
+                        .map(Event::getId)
+                        .collect(Collectors.toSet()),
+                ModerationState.PUBLISHED
+        );
+        Map<Long, List<Comment>> commentsByEvent = comments.stream()
+                .collect(Collectors.groupingBy(comment -> comment.getEvent().getId()));
+        return commentsByEvent.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entrySet -> entrySet.getValue().size()));
     }
 
     @Override
@@ -146,6 +161,30 @@ public class AbstractServiceImpl implements AbstractService {
             event.setTitle(updateEventRequest.getTitle());
         }
         return event;
+    }
+
+    @Override
+    public Comment getUpdatedComment(Comment comment, UpdateCommentRequest updateCommentRequest) {
+        if (updateCommentRequest.getText() != null) {
+            comment.setText(updateCommentRequest.getText());
+        }
+        return comment;
+    }
+
+    @Override
+    public List<Comment> getCommentsByEvent(long eventId) {
+        return commentRepository.findAllByEventId(eventId);
+    }
+
+    @Override
+    public Map<Long, List<Comment>> getCommentsByEvents(List<Event> events) {
+        List<Comment> comments = commentRepository.findAllByEventIdIn(
+                events.stream()
+                        .map(Event::getId)
+                        .collect(Collectors.toSet())
+        );
+        return  comments.stream()
+                .collect(Collectors.groupingBy(comment -> comment.getEvent().getId()));
     }
 
     protected String[] getUris(List<Event> events) {

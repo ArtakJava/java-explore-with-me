@@ -13,6 +13,7 @@ import ru.practicum.model.Compilation;
 import ru.practicum.model.Event;
 import ru.practicum.repository.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
@@ -25,22 +26,25 @@ public class CompilationAdminServiceImpl extends AbstractServiceImpl implements 
             EventRepository eventRepository,
             UserRepository userRepository,
             CategoryRepository categoryRepository,
-            CompilationRepository compilationRepository) {
-        super(requestRepository, eventRepository, userRepository, categoryRepository, compilationRepository);
+            CompilationRepository compilationRepository,
+            CommentRepository commentRepository) {
+        super(requestRepository, eventRepository, userRepository, categoryRepository, compilationRepository, commentRepository);
     }
 
     @Override
     public CompilationDto create(NewCompilationDto newCompilationDto) {
+        List<Event> events = new ArrayList<>();
         Compilation compilation = CompilationMapper.mapToCompilationEntity(newCompilationDto);
         if (newCompilationDto.getEvents().size() != 0) {
-            List<Event> events = eventRepository.findByIdIn(newCompilationDto.getEvents());
+            events = eventRepository.findByIdIn(newCompilationDto.getEvents());
             compilation.setEvents(events);
         }
         Compilation result = compilationRepository.save(compilation);
         CompilationDto compilationDto = CompilationMapper.mapToCompilationDto(
                 result,
-                getConfirmedRequestsByEvent(result.getEvents()),
-                getViewsByEventId(result.getEvents(), ConstantManager.DEFAULT_UNIQUE_FOR_STATS)
+                getConfirmedRequestsCountByEvent(result.getEvents()),
+                getViewsByEventId(result.getEvents(), ConstantManager.DEFAULT_UNIQUE_FOR_STATS),
+                getPublishedCommentsCountByEvent(events)
         );
         log.info(InfoMessageManager.SUCCESS_CREATE, compilationDto);
         return compilationDto;
@@ -59,8 +63,9 @@ public class CompilationAdminServiceImpl extends AbstractServiceImpl implements 
         Compilation result = compilationRepository.save(getUpdatedCompilation(oldCompilation,updateCompilationRequest));
         CompilationDto resultDto = CompilationMapper.mapToCompilationDto(
                 result,
-                getConfirmedRequestsByEvent(result.getEvents()),
-                getViewsByEventId(result.getEvents(), ConstantManager.DEFAULT_UNIQUE_FOR_STATS)
+                getConfirmedRequestsCountByEvent(result.getEvents()),
+                getViewsByEventId(result.getEvents(), ConstantManager.DEFAULT_UNIQUE_FOR_STATS),
+                getPublishedCommentsCountByEvent(result.getEvents())
         );
         log.info(InfoMessageManager.SUCCESS_PATCH, compId, updateCompilationRequest);
         return resultDto;

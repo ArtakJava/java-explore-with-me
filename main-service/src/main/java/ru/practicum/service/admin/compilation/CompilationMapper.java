@@ -22,7 +22,8 @@ public class CompilationMapper {
 
     public static CompilationDto mapToCompilationDto(Compilation compilation,
                                                      Map<Long, Integer> requests,
-                                                     Map<Long, Long> views) {
+                                                     Map<Long, Long> views,
+                                                     Map<Long, Integer> comments) {
         return CompilationDto.builder()
                 .title(compilation.getTitle())
                 .pinned(compilation.getPinned())
@@ -30,7 +31,8 @@ public class CompilationMapper {
                 .events(EventMapper.mapToEventsShortDto(
                         compilation.getEvents(),
                         requests,
-                        views
+                        views,
+                        comments
                         )
                 )
                 .build();

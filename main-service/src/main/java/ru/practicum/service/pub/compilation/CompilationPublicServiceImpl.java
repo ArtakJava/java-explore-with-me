@@ -25,8 +25,9 @@ public class CompilationPublicServiceImpl extends AbstractServiceImpl implements
             EventRepository eventRepository,
             UserRepository userRepository,
             CategoryRepository categoryRepository,
-            CompilationRepository compilationRepository) {
-        super(requestRepository, eventRepository, userRepository, categoryRepository, compilationRepository);
+            CompilationRepository compilationRepository,
+            CommentRepository commentRepository) {
+        super(requestRepository, eventRepository, userRepository, categoryRepository, compilationRepository, commentRepository);
     }
 
     @Override
@@ -35,8 +36,9 @@ public class CompilationPublicServiceImpl extends AbstractServiceImpl implements
         List<CompilationDto> result = compilations.stream()
                 .map(compilation -> CompilationMapper.mapToCompilationDto(
                         compilation,
-                        getConfirmedRequestsByEvent(compilation.getEvents()),
-                        getViewsByEventId(compilation.getEvents(), ConstantManager.DEFAULT_UNIQUE_FOR_STATS)
+                        getConfirmedRequestsCountByEvent(compilation.getEvents()),
+                        getViewsByEventId(compilation.getEvents(), ConstantManager.DEFAULT_UNIQUE_FOR_STATS),
+                        getPublishedCommentsCountByEvent(compilation.getEvents())
                         )
                 )
                 .collect(Collectors.toList());
@@ -49,8 +51,9 @@ public class CompilationPublicServiceImpl extends AbstractServiceImpl implements
         Compilation compilation = compilationRepository.getReferenceById(compId);
         CompilationDto compilationDto = CompilationMapper.mapToCompilationDto(
                 compilation,
-                getConfirmedRequestsByEvent(compilation.getEvents()),
-                getViewsByEventId(compilation.getEvents(), ConstantManager.DEFAULT_UNIQUE_FOR_STATS)
+                getConfirmedRequestsCountByEvent(compilation.getEvents()),
+                getViewsByEventId(compilation.getEvents(), ConstantManager.DEFAULT_UNIQUE_FOR_STATS),
+                getPublishedCommentsCountByEvent(compilation.getEvents())
         );
         log.info(InfoMessageManager.SUCCESS_COMPILATION_REQUEST, compId);
         return compilationDto;

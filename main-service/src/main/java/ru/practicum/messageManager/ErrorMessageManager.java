@@ -15,6 +15,9 @@ public class ErrorMessageManager {
             "Описание события должно быть в диапазоне 20 - 7000 символов.";
     public static final String EVENT_TITLE_MIN_3_MAX_120 =
             "Заголовок события должен быть в диапазоне 3 - 120 символов.";
+    public static final String COMMENT_TEXT_MIN_3_MAX_1000 =
+            "Текст комментария должен быть в диапазоне 3 - 1000 символов.";
+    public static final String COMMENT_TEXT_EMPTY = "Текст комментария не может быть пустым.";
     public static final String EVENT_PARTICIPANT_LIMIT_REACHED =
             "На событие с ID - %s достигнут лимит количества участников.";
     public static final String EVENT_PARTICIPANT_OWNER =
@@ -23,6 +26,10 @@ public class ErrorMessageManager {
             "Событие с ID - %s еще не опубликовано.";
     public static final String EVENT_ALREADY_PUBLISHED =
             "Событие с ID - %s уже опубликовано.";
+    public static final String COMMENT_ALREADY_PUBLISHED =
+            "Комментарий с ID - %s уже опубликован или уже отменен.";
+    public static final String USER_NOT_AUTHOR =
+            "Пользователь с ID - %s не является автором комментария с ID - %s.";
     public static final String NOT_FOUND =
             "Компонент с ID - %s не найден.";
     public static final String EVENT_DATE_IS_BEFORE_TWO_HOURS =

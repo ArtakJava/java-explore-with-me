@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.service.AbstractServiceImpl;
-import ru.practicum.dto.enums.EventState;
+import ru.practicum.dto.enums.ModerationState;
 import ru.practicum.dto.enums.RequestState;
 import ru.practicum.dto.request.ParticipationRequestDto;
 import ru.practicum.exception.EventNotPublishedForRequestException;
@@ -29,15 +29,16 @@ public class RequestPrivateServiceImpl extends AbstractServiceImpl implements Re
             EventRepository eventRepository,
             UserRepository userRepository,
             CategoryRepository categoryRepository,
-            CompilationRepository compilationRepository) {
-        super(requestRepository, eventRepository, userRepository, categoryRepository, compilationRepository);
+            CompilationRepository compilationRepository,
+            CommentRepository commentRepository) {
+        super(requestRepository, eventRepository, userRepository, categoryRepository, compilationRepository, commentRepository);
     }
 
     @Override
     public ParticipationRequestDto createRequest(long userId, long eventId) {
         User user = userRepository.getReferenceById(userId);
         Event event = eventRepository.getReferenceById(eventId);
-        if (event.getState().equals(EventState.PUBLISHED)) {
+        if (event.getState().equals(ModerationState.PUBLISHED)) {
             validateRequesterIdInEvent(userId, event);
             ParticipationRequest request = RequestMapper.mapToRequestEntity(user, event);
             if (event.getParticipantLimit() != 0) {

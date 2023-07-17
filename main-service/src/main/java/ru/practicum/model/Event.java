@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.dto.enums.EventState;
+import ru.practicum.dto.enums.ModerationState;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -45,7 +45,7 @@ public class Event {
     private Boolean requestModeration = true;
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
-    private EventState state;
+    private ModerationState state;
     private String title;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "compilations_events",

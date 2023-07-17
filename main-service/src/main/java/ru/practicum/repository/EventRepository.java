@@ -2,7 +2,7 @@ package ru.practicum.repository;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.practicum.dto.enums.EventState;
+import ru.practicum.dto.enums.ModerationState;
 import ru.practicum.model.Event;
 
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             long[] categories,
             boolean paid,
             LocalDateTime rangeStart,
-            EventState eventState,
+            ModerationState moderationState,
             Pageable pageable
     );
 
@@ -27,7 +27,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             boolean paid,
             LocalDateTime rangeStart,
             LocalDateTime rangeEnd,
-            EventState eventState,
+            ModerationState moderationState,
             Pageable pageable
     );
 
@@ -46,7 +46,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateAfter(
             long[] users,
-            List<EventState> states,
+            List<ModerationState> states,
             long[] categories,
             LocalDateTime now,
             Pageable pageable
@@ -54,7 +54,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateAfterAndEventDateBefore(
             long[] users,
-            List<EventState> states,
+            List<ModerationState> states,
             long[] categories,
             LocalDateTime rangeStart,
             LocalDateTime rangeEnd,
@@ -64,11 +64,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByCategoryIdInAndEventDateAfterAndState(
             long[] categories,
             LocalDateTime rangeStart,
-            EventState eventState,
+            ModerationState moderationState,
             Pageable pageable
     );
 
-    List<Event> findByEventDateAfterAndState(LocalDateTime rangeStart, EventState eventState, Pageable pageable);
+    List<Event> findByEventDateAfterAndState(LocalDateTime rangeStart, ModerationState moderationState, Pageable pageable);
 
     List<Event> findAllByCategoryIdInAndEventDateAfter(long[] categories, LocalDateTime rangeStart, Pageable pageable);
 }
